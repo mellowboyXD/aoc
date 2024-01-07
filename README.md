@@ -1,15 +1,11 @@
-# AoC Solution Repo
+# AoC 2015 Repo
 
 ## Intoduction
-My solutions to the AoC problems.
 
 *Started on Dec 2023* ~
 
-Status: Solving the 2015 Questions
-
 ## Repo Structure
 <pre>
-├── [year]
     └── day<#>
         ├── solution
         │   ├── code
