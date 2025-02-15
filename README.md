@@ -1,7 +1,6 @@
 # Advent Of Code Solutions
 
 ## How to navigate this repo?
-
 Branches in this repo:
 
 ```
@@ -9,4 +8,5 @@ Branches in this repo:
       |  -- master
       |  -- 2015
       |  -- 2016
+      ...
 ```
