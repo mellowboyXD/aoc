@@ -3,7 +3,7 @@
 #include <string.h>
 
 int main(void) {
-  FILE *fptr = fopen("input", "r");
+  FILE *fptr = fopen("src/day2/input", "r");
   if (fptr == NULL) {
     fprintf(stderr, "Unable to open file");
     exit(1);
