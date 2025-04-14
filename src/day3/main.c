@@ -20,9 +20,9 @@ typedef enum
 } bool;
 
 bool
-alreadyVisited(Point* visited_houses, int size, Point coordinates)
+alreadyVisited(Point* visited_houses, int count, Point coordinates)
 {
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i < count; i++) {
     if (visited_houses[i].x == coordinates.x &&
         visited_houses[i].y == coordinates.y) {
       return true;
