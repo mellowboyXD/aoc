@@ -1,4 +1,3 @@
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,7 +19,7 @@ typedef struct {
 
 typedef enum { false, true } bool;
 
-bool alreadyVisited(Point visited_houses[], int count, Point coordinates)
+bool alreadyVisited(Point *visited_houses, int count, Point coordinates)
 {
 	for (int i = 0; i < count; i++) {
 		if (visited_houses[i].x == coordinates.x &&
@@ -36,7 +35,7 @@ void addVisited(Point **visited_houses, int *count, Point coordinates)
 	(*count)++;
 
 	*visited_houses = realloc(*visited_houses, (*count) * sizeof(Point));
-	if (visited_houses == NULL) {
+	if (*visited_houses == NULL) {
 		perror("Unable to reallocate memory.\n");
 		exit(EXIT_FAILURE);
 	}
