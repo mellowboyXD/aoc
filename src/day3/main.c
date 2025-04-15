@@ -8,63 +8,63 @@
 #define NEWLINE '\n'
 
 #define FIRST_HOUSE 0
-#define BYTES_CPY 3 // fgets copies 2 bytes and adds '\0'
-#define SANTA_TOKEN_IDX 0
-#define ROBO_TOKEN_IDX 1
+#define BYTES 3 // fgets copies 2 bytes and adds '\0'
+#define SANTA_TOK 0
+#define ROBO_TOK 1
 
-typedef struct {
+struct point {
 	int x;
 	int y;
-} Point;
+};
 
-typedef enum { false, true } bool;
+enum boolean { false, true };
 
-bool alreadyVisited(Point *visited_houses, int count, Point coordinates)
+enum boolean check_visited(struct point *visited, int n,
+			   struct point coordinates)
 {
-	for (int i = 0; i < count; i++) {
-		if (visited_houses[i].x == coordinates.x &&
-		    visited_houses[i].y == coordinates.y) {
+	for (int i = 0; i < n; i++) {
+		if (visited[i].x == coordinates.x &&
+		    visited[i].y == coordinates.y) {
 			return true;
 		}
 	}
 	return false;
 }
 
-void addVisited(Point **visited_houses, int *count, Point coordinates)
+void add_visited(struct point **visited, int *n, struct point pos)
 {
-	(*count)++;
+	(*n)++;
 
-	*visited_houses = realloc(*visited_houses, (*count) * sizeof(Point));
-	if (*visited_houses == NULL) {
+	*visited = realloc(*visited, (*n) * sizeof(struct point));
+	if (*visited == NULL) {
 		perror("Unable to reallocate memory.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	(*visited_houses)[(*count) - 1] = coordinates;
+	(*visited)[(*n) - 1] = pos;
 }
 
-void listAllVisited(Point *visited_houses, int count)
+void list_visited(struct point *visited, int n)
 {
-	for (int i = 0; i < count; i++) {
-		printf("%i. (%i, %i)\n", i + 1, visited_houses[i].x,
-		       visited_houses[i].y);
+	for (int i = 0; i < n; i++) {
+		printf("%i. (%i, %i)\n", i + 1, visited[i].x, visited[i].y);
 	}
 }
 
-void move(Point *coordinates, char token)
+void move(struct point *pos, char tok)
 {
-	switch (token) {
+	switch (tok) {
 	case NORTH:
-		coordinates->y++;
+		pos->y++;
 		break;
 	case SOUTH:
-		coordinates->y--;
+		pos->y--;
 		break;
 	case EAST:
-		coordinates->x++;
+		pos->x++;
 		break;
 	case WEST:
-		coordinates->x--;
+		pos->x--;
 		break;
 	}
 }
@@ -77,49 +77,47 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	int count = 1;
-	Point santa = { 0, 0 };
-	Point robo_santa = { 0, 0 };
+	int n = 1;
+	struct point santa = { 0, 0 };
+	struct point robo = { 0, 0 };
 
-	Point *visited_houses = (Point *)malloc(count * sizeof(Point));
-	if (visited_houses == NULL) {
+	struct point *visited =
+		(struct point *)malloc(n * sizeof(struct point));
+	if (visited == NULL) {
 		perror("Could not allocate memory.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	visited_houses[FIRST_HOUSE] = santa;
+	visited[FIRST_HOUSE] = santa;
 
-	char token_buff[BYTES_CPY];
-	while ((fgets(token_buff, BYTES_CPY, fptr)) != NULL) {
-		char santa_token = token_buff[SANTA_TOKEN_IDX];
-		char robo_token = token_buff[ROBO_TOKEN_IDX];
+	char buffer[BYTES];
+	while ((fgets(buffer, BYTES, fptr)) != NULL) {
+		char santa_c = buffer[SANTA_TOK];
+		char robo_c = buffer[ROBO_TOK];
 
 		// Skips newline
-		if (santa_token == NEWLINE || robo_token == NEWLINE)
+		if (santa_c == NEWLINE || robo_c == NEWLINE)
 			break;
 
-		move(&santa, santa_token);
-		if (alreadyVisited(visited_houses, count, santa) == false) {
-			addVisited(&visited_houses, &count, santa);
+		move(&santa, santa_c);
+		if (check_visited(visited, n, santa) == false) {
+			add_visited(&visited, &n, santa);
 		} else {
-			printf("Santa: already visited: (%i, %i)\n", santa.x,
-			       santa.y);
+			printf("Already visited: (%i, %i)\n", santa.x, santa.y);
 		}
 
-		move(&robo_santa, robo_token);
-		if (alreadyVisited(visited_houses, count, robo_santa) ==
-		    false) {
-			addVisited(&visited_houses, &count, robo_santa);
+		move(&robo, robo_c);
+		if (check_visited(visited, n, robo) == false) {
+			add_visited(&visited, &n, robo);
 		} else {
-			printf("Robo-Santa: already visited: (%i, %i)\n",
-			       robo_santa.x, robo_santa.y);
+			printf("Already visited: (%i, %i)\n", robo.x, robo.y);
 		}
 	}
 
-	listAllVisited(visited_houses, count);
-	printf("Total visited houses: %i\n", count);
+	list_visited(visited, n);
+	printf("Total visited houses: %i\n", n);
 
-	free(visited_houses);
+	free(visited);
 	fclose(fptr);
 	exit(EXIT_SUCCESS);
 }
